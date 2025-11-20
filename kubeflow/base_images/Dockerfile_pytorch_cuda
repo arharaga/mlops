@@ -1,0 +1,29 @@
+FROM kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.7.0
+
+# Update the package lists, install necessary dependencies, and clean the cache in one step
+USER root
+RUN apt-get update \
+    && apt-get install -y \
+        python3-pip \
+        dnsutils \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+ENV JUPYTER_ALLOW_INSECURE_WRITES=1
+
+
+# Use pre-defined jupyter configs
+COPY jupyter_lab_config.py /home/jovyan/.jupyter/jupyter_lab_config.py
+COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
+COPY jupyter_server_config.py /home/jovyan/.jupyter/jupyter_server_config.py
+
+USER 1000
+# Install additional Python packages using pip
+RUN pip3 install jupyter-resource-usage\
+    psycopg2-binary==2.9.5 \
+    openpyxl \
+    boto3
+
+ENV JUPYTER_ALLOW_INSECURE_WRITES=1
