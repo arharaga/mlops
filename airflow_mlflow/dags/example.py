@@ -1,4 +1,10 @@
 import logging
+import numpy as np
+import os
+import json
+
+from datetime import timedelta, datetime
+from typing import NoReturn
 
 from airflow.models import DAG, Variable
 from airflow.operators.python_operator import PythonOperator
@@ -26,9 +32,9 @@ dag = DAG(
     tags=["mlops"],
 )
 
-def download_data() -> None:
+def download_data() -> NoReturn:
     import pandas as pd
-    
+    import sklearn
     from sklearn import datasets
     
     wine_data = datasets.load_wine()
